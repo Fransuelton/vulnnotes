@@ -1,14 +1,116 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
   <head>
-    <title>SaaS Vulnerável</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VulnNotes - SaaS Vulnerável</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+      .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+      .warning { background: #ffeb3b; color: #d84315; padding: 15px; margin-bottom: 20px; border-radius: 5px; font-weight: bold; text-align: center; }
+      .login-form { margin-bottom: 30px; }
+      .login-form input { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 5px; }
+      .login-form button { width: 100%; padding: 12px; background: #2196F3; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+      .login-form button:hover { background: #1976D2; }
+      .endpoints { margin-top: 30px; }
+      .endpoints h3 { color: #d32f2f; }
+      .endpoints ul { list-style: none; padding: 0; }
+      .endpoints li { margin: 8px 0; }
+      .endpoints a { color: #1976D2; text-decoration: none; }
+      .endpoints a:hover { text-decoration: underline; }
+      .credentials { background: #e3f2fd; padding: 15px; border-radius: 5px; margin: 15px 0; }
+    </style>
   </head>
   <body>
-    <h1>Login</h1>
-    <form method="POST" action="/login">
-      <input name="username" placeholder="Usuário" required />
-      <input name="password" placeholder="Senha" required />
-      <button type="submit">Entrar</button>
-    </form>
+    <div class="container">
+      <div class="warning">
+        ⚠️ SISTEMA PROPOSITALMENTE VULNERÁVEL PARA TESTES DE SEGURANÇA ⚠️
+      </div>
+      
+      <h1>🔓 VulnNotes - SaaS Vulnerável</h1>
+      
+      <div class="credentials">
+        <strong>Credenciais de teste:</strong><br>
+        • admin / 1234<br>
+        • guest / guest<br>
+        • test / (senha vazia)<br>
+        • root / toor<br>
+        • SQL Injection: admin' OR '1'='1
+      </div>
+      
+      <div class="login-form">
+        <h2>Login</h2>
+        <form method="POST" action="/login">
+          <input name="username" placeholder="Usuário" required />
+          <input name="password" placeholder="Senha" type="password" required />
+          <button type="submit">Entrar</button>
+        </form>
+      </div>
+      
+      <div class="endpoints">
+        <h3>🎯 Endpoints Vulneráveis para Teste:</h3>
+        <ul>
+          <li><strong>SQL Injection:</strong>
+            <ul>
+              <li><a href="/login">POST /login</a> - Login bypass</li>
+              <li><a href="/search">GET /search</a> - Busca com LIKE injection</li>
+            </ul>
+          </li>
+          <li><strong>Path Traversal:</strong>
+            <ul>
+              <li><a href="/file?path=package.json">GET /file</a> - Leitura de arquivos (tente ../../../etc/passwd)</li>
+              <li><a href="/template?file=config.json">GET /template</a> - LFI (tente ../package.json)</li>
+            </ul>
+          </li>
+          <li><strong>Command Injection:</strong>
+            <ul>
+              <li><a href="#" onclick="showPingForm()">POST /ping</a> - Ping command (tente: 127.0.0.1; ls -la)</li>
+            </ul>
+          </li>
+          <li><strong>Information Disclosure:</strong>
+            <ul>
+              <li><a href="/debug">GET /debug</a> - Informações do sistema e senhas</li>
+              <li><a href="/session/info?sessionId=test">GET /session/info</a> - Vazamento de sessões</li>
+            </ul>
+          </li>
+          <li><strong>XXE:</strong>
+            <ul>
+              <li><a href="/import">POST /import</a> - XML parser vulnerável</li>
+            </ul>
+          </li>
+          <li><strong>File Upload:</strong>
+            <ul>
+              <li><a href="#" onclick="showUploadForm()">POST /upload</a> - Upload sem restrições</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      
+      <div id="forms" style="margin-top: 30px;"></div>
+    </div>
+    
+    <script>
+      function showPingForm() {
+        document.getElementById('forms').innerHTML = `
+          <h3>Ping Command</h3>
+          <form method="POST" action="/ping">
+            <input name="host" placeholder="Host para ping (ex: 127.0.0.1)" style="width: 70%; padding: 8px;" />
+            <button type="submit" style="padding: 8px 15px;">Ping</button>
+          </form>
+          <p><small>Tente: <code>127.0.0.1; ls -la</code> ou <code>127.0.0.1 && whoami</code></small></p>
+        `;
+      }
+      
+      function showUploadForm() {
+        document.getElementById('forms').innerHTML = `
+          <h3>File Upload</h3>
+          <form method="POST" action="/upload" enctype="multipart/form-data">
+            <input type="file" name="file" />
+            <button type="submit">Upload</button>
+          </form>
+          <p><small>Aceita qualquer tipo de arquivo, inclusive scripts maliciosos</small></p>
+        `;
+      }
+    </script>
   </body>
 </html>
