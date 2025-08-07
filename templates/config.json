@@ -1,0 +1,22 @@
+{
+  "database": {
+    "file": "db.sqlite",
+    "password": "admin123!@#"
+  },
+  "secrets": {
+    "api_key": "sk-1234567890abcdef",
+    "jwt_secret": "my-super-secret-key",
+    "admin_password": "SuperSecretAdmin2025!"
+  },
+  "server": {
+    "port": 3000,
+    "debug": true,
+    "cors": false
+  },
+  "features": {
+    "file_upload": true,
+    "command_execution": true,
+    "sql_injection": true,
+    "xss_protection": false
+  }
+}
